@@ -28,9 +28,7 @@ public interface CachingStrategy<T> {
      */
     default String buildKey(String serviceName, Object... params) {
         Objects.requireNonNull(serviceName, "Service name must not be null");
-        final var key = serviceName + ":" + Arrays.toString(params);
-        System.out.println("Cache key: " + key);
-        return key;
+        return serviceName + ":" + Arrays.toString(params);
     }
 
     /**

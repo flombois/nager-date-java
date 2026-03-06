@@ -125,6 +125,11 @@ public class Command {
 
         /**
          * Creates the services factory used to instantiate API services.
+         * <p>
+         * Wraps an {@link HttpServicesFactory} with a {@link CachedServicesFactory}.
+         * When the {@code --cache} flag is set, uses {@link HashMapCacheFactory} for
+         * in-memory caching; otherwise uses {@link NullCacheFactory} (no caching).
+         * </p>
          *
          * @return the services factory
          */

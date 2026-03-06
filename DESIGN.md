@@ -30,9 +30,21 @@ Each API operation is encapsulated as a `ServiceExecutor<T>` object with a singl
 
 ## Factory
 
-**Location:** `ServicesFactory` (`nager-date-api`) / `HttpServicesFactory` (`nager-date-http-client`)
+**Location:** `ServicesFactory` (`nager-date-api`) / `HttpServicesFactory` (`nager-date-http-client`) / `CachedServicesFactory` (`nager-date-caching`)
 
-`ServicesFactory` defines factory methods for creating service instances. `HttpServicesFactory` is the concrete implementation that creates HTTP-backed services from a `NagerDateHttpClient`, abstracting away the transport layer.
+`ServicesFactory` defines factory methods for creating service instances. `HttpServicesFactory` is the concrete implementation that creates HTTP-backed services from a `NagerDateHttpClient`, abstracting away the transport layer. `CachedServicesFactory` is a decorator that wraps any `ServicesFactory` and adds caching behavior to the created services using a `CacheFactory`.
+
+## Decorator
+
+**Location:** `CachedService`, `CachedCountryV3Service`, `CachedLongWeekendV3Service`, `CachedPublicHolidayV3Service` (`nager-date-caching`)
+
+Cached services wrap delegate services and intercept calls with a `CachingStrategy`. `CachedService<S, T>` is the abstract base class; concrete decorators override service methods to check the cache before delegating to the underlying service.
+
+## Null Object
+
+**Location:** `NullCache`, `NullCacheFactory` (`nager-date-caching`)
+
+`NullCache` implements `Cache<T>` with no-op operations (never stores, never returns cached values). `NullCacheFactory` produces `NullCache` instances. Used when caching is disabled (e.g., CLI without `--cache` flag), allowing the same code path without conditional logic.
 
 ## Singleton
 
@@ -57,5 +69,6 @@ Service interfaces define a core abstract method and use default methods to prov
 ```
 nager-date-api            Service interfaces, models, factory interface (Strategy via default methods, Factory)
 nager-date-http-client    HTTP transport layer, factory impl  (Singleton, Strategy, Factory)
+nager-date-caching        Caching decorator layer             (Decorator, Strategy, Null Object, Factory)
 nager-date-cli            CLI application                     (Template Method, Command, Adapter, Strategy)
 ```
