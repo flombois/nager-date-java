@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * Base command class defining global CLI parameters shared across all subcommands.
  * <p>
- * Contains common options such as output format, subdivision, offset, base URL, and API key.
+ * Contains common options such as output format, subdivision, offset, and base URL.
  * Subcommands extend {@link ServiceInvocationCommand} to implement specific API interactions.
  * </p>
  *
@@ -41,34 +41,31 @@ import java.util.Set;
 public class Command {
 
     @Parameter(names = {"-h", "--help"}, help = true, description = "Prints this help message")
-    protected boolean help;
+    public boolean help;
 
     @Parameter(names = {"-v", "--version"}, description = "Prints the version")
-    protected boolean version;
+    public boolean version;
 
     @Parameter(names = {"-f", "--format"}, description = "Output format, available: PLAIN, JSON, TABLE", defaultValueDescription = "PLAIN")
-    protected OutputFormat outputFormat = OutputFormat.PLAIN;
+    public OutputFormat outputFormat = OutputFormat.PLAIN;
 
     @Parameter(names = {"-d", "--subdivision"}, description = "Narrow the calculation to a specific federal state, province, or subdivision (where supported).")
-    protected String subdivision = "";
+    public String subdivision = "";
 
     @Parameter(names = {"-o", "--offset"}, description = "Optional. UTC timezone offset in hours (range: -12 to +12).", defaultValueDescription = "default: 0")
-    protected int offset = 0;
+    public int offset = 0;
 
     @Parameter(names = {"-b", "--available-bridge-days"}, description = "The maximum number of bridge days to include when determining long-weekend opportunities.", defaultValueDescription = "min: 1, max: 100, default: 1")
-    protected int availableBridgeDays = 1;
+    public int availableBridgeDays = 1;
 
     @Parameter(names = {"-u", "--url"}, description = "API base url", defaultValueDescription = "Target public API by default (https://date.nager.at)")
-    protected String baseUrl = "";
-
-    @Parameter(names = {"-k", "--key"}, description = "API key")
-    protected String key = "";
+    public String baseUrl = "";
 
     @Parameter(names = {"-y", "--year"}, description = "Year", defaultValueDescription = "default to current year", converter = YearConverter.class)
-    protected Year year = Year.now();
+    public Year year = Year.now();
 
     @Parameter(names = {"-c", "--country-code"}, description = "The 2-letter ISO 3166-1 country code (e.g., \"US\", \"GB\").", defaultValueDescription = "default to system set locale country code")
-    protected CountryCode countryCode = defaultCountryCode();
+    public CountryCode countryCode = defaultCountryCode();
 
     // Try to get set country code from system locale, default to US if not set
     private static CountryCode defaultCountryCode() {
@@ -132,18 +129,14 @@ public class Command {
          * Creates a new {@link NagerDateHttpClient} based on the provided CLI options.
          * <p>
          * Selects the appropriate constructor depending on whether a base URL
-         * and/or API key have been specified.
+         * has been specified.
          * </p>
          *
          * @return the configured HTTP client
          */
         protected NagerDateHttpClient newNagerDateHttpClient() {
-            final boolean hasBaseUrl = !Objects.isNull(baseUrl) && ! baseUrl.isBlank();
-            final boolean hasKey = !Objects.isNull(key) && !key.isBlank();
-            return hasBaseUrl ? hasKey ?
-                    new NagerDateHttpClient(baseUrl, key)
-                    : new NagerDateHttpClient(baseUrl)
-                    : new NagerDateHttpClient();
+            final boolean hasBaseUrl = !Objects.isNull(baseUrl) && !baseUrl.isBlank();
+            return hasBaseUrl ? new NagerDateHttpClient(baseUrl) : new NagerDateHttpClient();
         }
 
         /**
@@ -152,7 +145,7 @@ public class Command {
          * @return the command execution context
          */
         protected Context buildContext() {
-            return new Context(newNagerDateHttpClient(), countryCode, year, outputFormat, subdivision, offset, baseUrl, availableBridgeDays);
+            return new Context(countryCode, year, outputFormat, subdivision, offset, availableBridgeDays);
         }
 
         /**

@@ -65,11 +65,11 @@ class LongWeekendCommandTest {
         longWeekend.setDayCount(4);
         longWeekend.setNeedBridgeDay(true);
 
-        when(longWeekendV3Service.getLongWeekend(any(CountryCode.class), any(Year.class)))
+        when(longWeekendV3Service.getLongWeekend(any(CountryCode.class), any(Year.class), anyInt(), anyString()))
                 .thenReturn(Set.of(longWeekend));
 
         spy.execute();
 
-        verify(longWeekendV3Service).getLongWeekend(any(CountryCode.class), any(Year.class));
+        verify(longWeekendV3Service).getLongWeekend(any(CountryCode.class), any(Year.class), anyInt(), anyString());
     }
 }

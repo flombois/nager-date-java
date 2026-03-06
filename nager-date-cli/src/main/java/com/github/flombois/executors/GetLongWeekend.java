@@ -28,7 +28,7 @@ public class GetLongWeekend implements ServiceExecutor<Set<LongWeekendV3>> {
 
     @Override
     public Set<LongWeekendV3> callService(Context context) throws NagerDateServiceException {
-        return longWeekendV3Service.getLongWeekend(context.countryCode(), context.year());
+        return longWeekendV3Service.getLongWeekend(context.countryCode(), context.year(), context.availableBridgeDays(), context.subdivision());
     }
 
     /**

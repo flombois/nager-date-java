@@ -91,7 +91,7 @@ public interface PublicHolidayV3Service {
      * @return true if today is a public holiday, false otherwise
      * @throws NagerDateServiceException if an error occurs while communicating with the API
      */
-    boolean isTodayAPublicHoliday(CountryCode countryCode, String countyCode, byte offset) throws NagerDateServiceException;
+    boolean isTodayAPublicHoliday(CountryCode countryCode, String countyCode, int offset) throws NagerDateServiceException;
 
     /**
      * Checks whether today is a public holiday in the specified country, wrapped in an Optional.
@@ -106,7 +106,7 @@ public interface PublicHolidayV3Service {
      * @return an Optional containing {@code true} if today is a public holiday, {@code false} otherwise,
      *         or empty on failure
      */
-    default Optional<Boolean> getOptionalTodayAPublicHoliday(CountryCode countryCode, String countyCode, byte offset){
+    default Optional<Boolean> getOptionalTodayAPublicHoliday(CountryCode countryCode, String countyCode, int offset){
         try {
             return Optional.of(isTodayAPublicHoliday(countryCode, countyCode, offset));
         } catch (NagerDateServiceException e) {
