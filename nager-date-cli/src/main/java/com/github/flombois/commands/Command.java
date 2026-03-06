@@ -68,7 +68,16 @@ public class Command {
     protected Year year = Year.now();
 
     @Parameter(names = {"-c", "--country-code"}, description = "The 2-letter ISO 3166-1 country code (e.g., \"US\", \"GB\").", defaultValueDescription = "default to system set locale country code")
-    protected CountryCode countryCode = CountryCode.valueOf(Locale.getDefault().getCountry());
+    protected CountryCode countryCode = defaultCountryCode();
+
+    // Try to get set country code from system locale, default to US if not set
+    private static CountryCode defaultCountryCode() {
+        String country = Locale.getDefault().getCountry(); // getDefault and getCountry never return null according to spec
+        if (country.isEmpty()) {
+            return CountryCode.US;
+        }
+        return CountryCode.valueOf(country);
+    }
 
     /**
      * Returns the name of this command used for JCommander routing.
