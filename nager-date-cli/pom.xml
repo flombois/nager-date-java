@@ -47,21 +47,6 @@
             <version>5.17.0</version>
             <scope>test</scope>
         </dependency>
-
-
-        <!-- Required by mockito for java 25 -->
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.17.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-agent</artifactId>
-            <version>1.17.5</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
