@@ -1,6 +1,7 @@
 package com.github.flombois.services.v3;
 
 import com.github.flombois.models.v3.PublicHolidayV3;
+import com.github.flombois.services.NagerDateService;
 import com.github.flombois.services.NagerDateServiceException;
 
 import java.time.Year;
@@ -18,7 +19,7 @@ import java.util.Set;
  *
  * @since 1.0
  */
-public interface PublicHolidayV3Service {
+public interface PublicHolidayV3Service extends NagerDateService {
 
     /**
      * Retrieves all public holidays for a specific country in the current year.

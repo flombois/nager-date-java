@@ -6,6 +6,7 @@ import com.github.flombois.http.ResponseHandler;
 import com.github.flombois.mappers.JsonMapper;
 import com.github.flombois.models.v3.PublicHolidayV3;
 import com.github.flombois.services.NagerDateServiceException;
+import com.github.flombois.services.v3.PublicHolidayV3Service;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.net.http.HttpResponse;
