@@ -1,6 +1,8 @@
 package com.github.flombois.commands;
 
 import com.github.flombois.commands.Command.ListAllCountriesCommand;
+import com.github.flombois.factories.CachedServicesFactory;
+import com.github.flombois.factories.ServicesFactory;
 import com.github.flombois.http.NagerDateHttpClient;
 import org.junit.jupiter.api.Test;
 
@@ -50,5 +52,27 @@ class ServiceInvocationCommandTest {
 
         assertNotNull(client);
         assertEquals(NagerDateHttpClient.PUBLIC_V3_ENDPOINT, client.getBaseUrl());
+    }
+
+    @Test
+    void getServicesFactoryWithCacheEnabledReturnsCachedServicesFactory() {
+        var command = ListAllCountriesCommand.INSTANCE;
+        command.cache = true;
+        command.baseUrl = "";
+
+        ServicesFactory factory = command.getServicesFactory();
+
+        assertInstanceOf(CachedServicesFactory.class, factory);
+    }
+
+    @Test
+    void getServicesFactoryWithCacheDisabledReturnsCachedServicesFactory() {
+        var command = ListAllCountriesCommand.INSTANCE;
+        command.cache = false;
+        command.baseUrl = "";
+
+        ServicesFactory factory = command.getServicesFactory();
+
+        assertInstanceOf(CachedServicesFactory.class, factory);
     }
 }
