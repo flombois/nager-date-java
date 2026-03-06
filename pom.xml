@@ -12,6 +12,7 @@
       <module>nager-date-api</module>
       <module>nager-date-http-client</module>
       <module>nager-date-cli</module>
+    <module>nager-date-caching</module>
   </modules>
 
   <properties>

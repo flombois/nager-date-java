@@ -7,6 +7,7 @@ import java.util.Set;
 import com.github.flombois.models.CountryInfo;
 import com.github.flombois.models.CountryInfoWithBorders;
 import com.github.flombois.models.v3.CountryV3;
+import com.github.flombois.services.NagerDateService;
 import com.github.flombois.services.NagerDateServiceException;
 
 /**
@@ -19,7 +20,7 @@ import com.github.flombois.services.NagerDateServiceException;
  *
  * @since 1.0
  */
-public interface CountryV3Service {
+public interface CountryV3Service extends NagerDateService {
 
     /**
      * Retrieves basic country information for the specified country.
@@ -28,7 +29,9 @@ public interface CountryV3Service {
      * @return a {@link CountryInfo} object containing country details
      * @throws NagerDateServiceException if an error occurs while communicating with the API
      */
-    CountryInfo getCountryInfo(CountryCode countryCode) throws NagerDateServiceException;
+    default CountryInfo getCountryInfo(CountryCode countryCode) throws NagerDateServiceException {
+        return getCountryInfoWithBorders(countryCode);
+    }
 
     /**
      * Retrieves basic country information as an Optional for the specified country.
