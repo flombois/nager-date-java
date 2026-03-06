@@ -74,7 +74,7 @@ public class HttpPublicHolidayV3Service implements PublicHolidayV3Service {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isTodayAPublicHoliday(CountryCode countryCode, String countyCode, byte offset) throws NagerDateServiceException {
+    public boolean isTodayAPublicHoliday(CountryCode countryCode, String countyCode, int offset) throws NagerDateServiceException {
         try {
             return client.callApi(getIsTodayPublicHolidayUri(countryCode, countyCode, offset), new ResponseHandler<>() {
                 @Override
@@ -101,7 +101,7 @@ public class HttpPublicHolidayV3Service implements PublicHolidayV3Service {
      * @param offset the timezone offset from UTC in hours
      * @return the constructed URI path with query parameters
      */
-    protected String getIsTodayPublicHolidayUri(CountryCode countryCode, String countyCode, byte offset) {
+    protected String getIsTodayPublicHolidayUri(CountryCode countryCode, String countyCode, int offset) {
         return IS_TODAY_PUBLIC_HOLIDAY_ENDPOINT + "/" + countryCode.name() + toQueryParam(countyCode, offset);
     }
 

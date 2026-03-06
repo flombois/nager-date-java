@@ -31,7 +31,6 @@ public class NagerDateHttpClient {
     public static final String PUBLIC_V3_ENDPOINT = PUBLIC_BASE_URL + V3_PATH;
 
     private final String baseUrl;
-    private final String key; // TODO check how key is used to authenticate
     private final HttpClient httpClient;
 
     /**
@@ -47,13 +46,7 @@ public class NagerDateHttpClient {
      * @param baseUrl the base URL for API requests (e.g., for a self-hosted instance)
      */
     public NagerDateHttpClient(String baseUrl) {
-        this(baseUrl, null);
-    }
-
-
-    public NagerDateHttpClient(String baseUrl, String key) {
         this.baseUrl = baseUrl;
-        this.key = key;
         this.httpClient = HttpClient.newBuilder().build();
     }
 

@@ -12,7 +12,6 @@ class ServiceInvocationCommandTest {
     void newNagerDateHttpClientWithNoBaseUrlUsesPublicEndpoint() {
         var command = ListAllCountriesCommand.INSTANCE;
         command.baseUrl = "";
-        command.key = "";
 
         NagerDateHttpClient client = command.newNagerDateHttpClient();
 
@@ -21,22 +20,9 @@ class ServiceInvocationCommandTest {
     }
 
     @Test
-    void newNagerDateHttpClientWithBaseUrlOnly() {
+    void newNagerDateHttpClientWithBaseUrl() {
         var command = ListAllCountriesCommand.INSTANCE;
         command.baseUrl = "https://custom.api.com";
-        command.key = "";
-
-        NagerDateHttpClient client = command.newNagerDateHttpClient();
-
-        assertNotNull(client);
-        assertEquals("https://custom.api.com", client.getBaseUrl());
-    }
-
-    @Test
-    void newNagerDateHttpClientWithBaseUrlAndKey() {
-        var command = ListAllCountriesCommand.INSTANCE;
-        command.baseUrl = "https://custom.api.com";
-        command.key = "my-api-key";
 
         NagerDateHttpClient client = command.newNagerDateHttpClient();
 
@@ -48,7 +34,6 @@ class ServiceInvocationCommandTest {
     void newNagerDateHttpClientWithBlankBaseUrlUsesPublicEndpoint() {
         var command = ListAllCountriesCommand.INSTANCE;
         command.baseUrl = "   ";
-        command.key = "some-key";
 
         NagerDateHttpClient client = command.newNagerDateHttpClient();
 
@@ -60,7 +45,6 @@ class ServiceInvocationCommandTest {
     void newNagerDateHttpClientWithNullBaseUrlUsesPublicEndpoint() {
         var command = ListAllCountriesCommand.INSTANCE;
         command.baseUrl = null;
-        command.key = "";
 
         NagerDateHttpClient client = command.newNagerDateHttpClient();
 

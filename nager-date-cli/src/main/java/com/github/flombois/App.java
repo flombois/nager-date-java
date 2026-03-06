@@ -4,10 +4,12 @@ import com.beust.jcommander.JCommander;
 import com.github.flombois.commands.Command;
 
 import com.github.flombois.commands.Command.*;
+import com.github.flombois.models.VersionInfo;
 import com.github.flombois.services.NagerDateServiceException;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.jar.Manifest;
 
 import static java.lang.System.exit;
 
@@ -47,18 +49,36 @@ public class App {
         cmd.parse(args);
         final var subCommand = cmd.getParsedCommand();
 
-        // If no subcommand show usage and exit
-        if (Objects.isNull(subCommand)) {
-            cmd.usage();
-            exit(1);
-        }
+        // Handle the help/version flags
+        if (MAIN_COMMAND.version) showVersion();
+        if (MAIN_COMMAND.help) showHelp();
+        if (Objects.isNull(subCommand)) showHelp();
 
-        // Otherwise execute the subcommand
+
+        // Execute the subcommand
         try {
             SUB_COMMANDS.get(subCommand).execute();
         } catch (NagerDateServiceException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void showVersion() {
+        try (final var inputStream = App.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
+            final var manifest = new Manifest(inputStream);
+            final var name = manifest.getAttributes("Name");
+            final var version = manifest.getAttributes("Version");
+            System.out.println(name + " " + version);
+        } catch (Exception e) {
+            System.out.println("Failed to retrieve version information");
+            exit(1);
+        }
+        exit(0);
+    }
+
+    private static void showHelp() {
+        cmd.usage();
+        exit(0);
     }
 
 

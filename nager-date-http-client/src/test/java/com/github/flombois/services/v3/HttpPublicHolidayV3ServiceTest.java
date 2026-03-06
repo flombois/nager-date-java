@@ -99,7 +99,7 @@ class HttpPublicHolidayV3ServiceTest {
                 .willReturn(aResponse()
                         .withStatus(200)));
 
-        boolean result = service.isTodayAPublicHoliday(CountryCode.FR, null, (byte) 127);
+        boolean result = service.isTodayAPublicHoliday(CountryCode.FR, null, 127);
 
         assertTrue(result);
     }
@@ -110,7 +110,7 @@ class HttpPublicHolidayV3ServiceTest {
                 .willReturn(aResponse()
                         .withStatus(204)));
 
-        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, null, (byte) 127);
+        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, null, 127);
 
         assertFalse(result);
     }
@@ -121,7 +121,7 @@ class HttpPublicHolidayV3ServiceTest {
                 .willReturn(aResponse()
                         .withStatus(200)));
 
-        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, "DE-BY", (byte) 127);
+        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, "DE-BY", 127);
 
         assertTrue(result);
     }
@@ -132,7 +132,7 @@ class HttpPublicHolidayV3ServiceTest {
                 .willReturn(aResponse()
                         .withStatus(200)));
 
-        boolean result = service.isTodayAPublicHoliday(CountryCode.FR, null, (byte) 2);
+        boolean result = service.isTodayAPublicHoliday(CountryCode.FR, null, 2);
 
         assertTrue(result);
     }
@@ -143,7 +143,7 @@ class HttpPublicHolidayV3ServiceTest {
                 .willReturn(aResponse()
                         .withStatus(200)));
 
-        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, "DE-BY", (byte) 1);
+        boolean result = service.isTodayAPublicHoliday(CountryCode.DE, "DE-BY", 1);
 
         assertTrue(result);
     }
@@ -155,6 +155,6 @@ class HttpPublicHolidayV3ServiceTest {
                         .withStatus(500)));
 
         assertThrows(NagerDateServiceException.class,
-                () -> service.isTodayAPublicHoliday(CountryCode.FR, null, (byte) 127));
+                () -> service.isTodayAPublicHoliday(CountryCode.FR, null, 127));
     }
 }

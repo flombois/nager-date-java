@@ -6,7 +6,6 @@
         <artifactId>nager-date-java</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>nager-date-cli</artifactId>
     <packaging>jar</packaging>
 
@@ -51,6 +50,22 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.github.flombois.App</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Name>${project.artifactId}</Name>
+                            <Version>${project.version}</Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>

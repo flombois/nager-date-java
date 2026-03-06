@@ -26,17 +26,35 @@ class GetLongWeekendTest {
     Context context;
 
     @Test
-    void callServiceDelegatesToGetLongWeekend() throws NagerDateServiceException {
+    void callServiceForwardsAllContextParameters() throws NagerDateServiceException {
         Set<LongWeekendV3> expected = Set.of();
         when(context.countryCode()).thenReturn(CountryCode.DE);
         when(context.year()).thenReturn(Year.of(2025));
-        when(longWeekendV3Service.getLongWeekend(CountryCode.DE, Year.of(2025))).thenReturn(expected);
+        when(context.availableBridgeDays()).thenReturn(3);
+        when(context.subdivision()).thenReturn("DE-BY");
+        when(longWeekendV3Service.getLongWeekend(CountryCode.DE, Year.of(2025), 3, "DE-BY")).thenReturn(expected);
 
         var executor = new GetLongWeekend(longWeekendV3Service);
         var result = executor.callService(context);
 
         assertSame(expected, result);
-        verify(longWeekendV3Service).getLongWeekend(CountryCode.DE, Year.of(2025));
+        verify(longWeekendV3Service).getLongWeekend(CountryCode.DE, Year.of(2025), 3, "DE-BY");
+    }
+
+    @Test
+    void callServiceForwardsDefaultValues() throws NagerDateServiceException {
+        Set<LongWeekendV3> expected = Set.of();
+        when(context.countryCode()).thenReturn(CountryCode.US);
+        when(context.year()).thenReturn(Year.of(2026));
+        when(context.availableBridgeDays()).thenReturn(1);
+        when(context.subdivision()).thenReturn("");
+        when(longWeekendV3Service.getLongWeekend(CountryCode.US, Year.of(2026), 1, "")).thenReturn(expected);
+
+        var executor = new GetLongWeekend(longWeekendV3Service);
+        var result = executor.callService(context);
+
+        assertSame(expected, result);
+        verify(longWeekendV3Service).getLongWeekend(CountryCode.US, Year.of(2026), 1, "");
     }
 
     @Test

@@ -4,7 +4,7 @@ A command-line interface for the [Nager.Date API](https://date.nager.at), provid
 
 ## Prerequisites
 
-- Java 25+
+- Java 21+
 - Maven 3.9+
 
 ## Build
@@ -41,7 +41,6 @@ java -jar nager-date-cli/target/nager-date-cli-1.0-SNAPSHOT.jar <command> [optio
 | `-o, --offset`                  | UTC timezone offset (-12 to +12)           |                |
 | `-b, --available-bridge-days`   | Max bridge days for long weekends (1-100)  | `1`            |
 | `-u, --url`                     | Custom API base URL                        | date.nager.at  |
-| `-k, --key`                     | API key for authentication                 |                |
 | `-h, --help`                    | Show help message                          |                |
 | `-v, --version`                 | Show version info                          |                |
 
