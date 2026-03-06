@@ -30,7 +30,7 @@ Each API operation is encapsulated as a `ServiceExecutor<T>` object with a singl
 
 ## Factory
 
-**Location:** `ServicesFactory` / `HttpServicesFactory` (`nager-date-cli`)
+**Location:** `ServicesFactory` (`nager-date-api`) / `HttpServicesFactory` (`nager-date-http-client`)
 
 `ServicesFactory` defines factory methods for creating service instances. `HttpServicesFactory` is the concrete implementation that creates HTTP-backed services from a `NagerDateHttpClient`, abstracting away the transport layer.
 
@@ -55,8 +55,7 @@ Service interfaces define a core abstract method and use default methods to prov
 ## Module Overview
 
 ```
-nager-date-api            Service interfaces, models (Strategy via default methods)
-nager-date-http-client    HTTP transport layer        (Singleton, Strategy)
-nager-date-cli            CLI application             (Template Method, Command, Factory,
-                                                       Adapter, Strategy)
+nager-date-api            Service interfaces, models, factory interface (Strategy via default methods, Factory)
+nager-date-http-client    HTTP transport layer, factory impl  (Singleton, Strategy, Factory)
+nager-date-cli            CLI application                     (Template Method, Command, Adapter, Strategy)
 ```
