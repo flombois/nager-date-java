@@ -2,12 +2,12 @@ package com.github.flombois.services.v3;
 
 import com.github.flombois.ApiCallException;
 import com.github.flombois.mappers.JsonMapper;
-import com.github.flombois.models.CountryInfo;
 import com.github.flombois.models.CountryInfoWithBorders;
 import com.github.flombois.models.v3.CountryV3;
 import com.github.flombois.services.NagerDateServiceException;
 import com.github.flombois.http.NagerDateHttpClient;
 
+import com.github.flombois.services.v3.CountryV3Service;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.util.Set;
@@ -40,16 +40,6 @@ public class HttpCountryV3Service implements CountryV3Service {
         this.client = client;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This implementation delegates to {@link #getCountryInfoWithBorders(CountryCode)}.
-     * </p>
-     */
-    @Override
-    public CountryInfo getCountryInfo(CountryCode countryCode) throws NagerDateServiceException {
-        return getCountryInfoWithBorders(countryCode);
-    }
 
     /** {@inheritDoc} */
     @Override

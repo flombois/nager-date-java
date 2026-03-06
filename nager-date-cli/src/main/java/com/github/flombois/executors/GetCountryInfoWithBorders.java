@@ -1,7 +1,6 @@
 package com.github.flombois.executors;
 
 import com.github.flombois.Context;
-import com.github.flombois.models.CountryInfo;
 import com.github.flombois.models.CountryInfoWithBorders;
 import com.github.flombois.services.NagerDateServiceException;
 import com.github.flombois.services.v3.CountryV3Service;

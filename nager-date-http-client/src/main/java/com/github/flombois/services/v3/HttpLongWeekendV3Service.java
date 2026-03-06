@@ -6,6 +6,7 @@ import com.github.flombois.mappers.JsonMapper;
 import com.github.flombois.mappers.MappingException;
 import com.github.flombois.models.v3.LongWeekendV3;
 import com.github.flombois.services.NagerDateServiceException;
+import com.github.flombois.services.v3.LongWeekendV3Service;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.time.Year;

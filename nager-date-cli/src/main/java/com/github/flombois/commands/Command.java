@@ -9,8 +9,12 @@ import com.github.flombois.executors.GetLongWeekend;
 import com.github.flombois.executors.GetPublicHoliday;
 import com.github.flombois.executors.ListAllCountries;
 import com.github.flombois.executors.ServiceExecutor;
+import com.github.flombois.factories.CachedServicesFactory;
 import com.github.flombois.factories.HttpServicesFactory;
+import com.github.flombois.factories.NullCacheFactory;
 import com.github.flombois.factories.ServicesFactory;
+import com.github.flombois.factories.caches.CacheFactory;
+import com.github.flombois.factories.caches.HashMapCacheFactory;
 import com.github.flombois.http.NagerDateHttpClient;
 import com.github.flombois.models.CountryInfoWithBorders;
 import com.github.flombois.printers.PrintableCountryInfoWithBorders;
@@ -58,13 +62,16 @@ public class Command {
     @Parameter(names = {"-b", "--available-bridge-days"}, description = "The maximum number of bridge days to include when determining long-weekend opportunities.", defaultValueDescription = "min: 1, max: 100, default: 1")
     public int availableBridgeDays = 1;
 
+    @Parameter(names = {"-c", "--cache"}, description = "Enable in-memory caching of API responses")
+    public boolean cache = false;
+
     @Parameter(names = {"-u", "--url"}, description = "API base url", defaultValueDescription = "Target public API by default (https://date.nager.at)")
     public String baseUrl = "";
 
     @Parameter(names = {"-y", "--year"}, description = "Year", defaultValueDescription = "default to current year", converter = YearConverter.class)
     public Year year = Year.now();
 
-    @Parameter(names = {"-c", "--country-code"}, description = "The 2-letter ISO 3166-1 country code (e.g., \"US\", \"GB\").", defaultValueDescription = "default to system set locale country code")
+    @Parameter(names = {"-cc", "--country-code"}, description = "The 2-letter ISO 3166-1 country code (e.g., \"US\", \"GB\").", defaultValueDescription = "default to system set locale country code")
     public CountryCode countryCode = defaultCountryCode();
 
     // Try to get set country code from system locale, default to US if not set
@@ -118,11 +125,20 @@ public class Command {
 
         /**
          * Creates the services factory used to instantiate API services.
+         * <p>
+         * Wraps an {@link HttpServicesFactory} with a {@link CachedServicesFactory}.
+         * When the {@code --cache} flag is set, uses {@link HashMapCacheFactory} for
+         * in-memory caching; otherwise uses {@link NullCacheFactory} (no caching).
+         * </p>
          *
          * @return the services factory
          */
         protected ServicesFactory getServicesFactory() {
-            return new HttpServicesFactory(newNagerDateHttpClient());
+            CacheFactory cacheFactory = cache ? new HashMapCacheFactory() : new NullCacheFactory();
+            return new CachedServicesFactory(
+                    new HttpServicesFactory(newNagerDateHttpClient()),
+                    cacheFactory
+            );
         }
 
         /**

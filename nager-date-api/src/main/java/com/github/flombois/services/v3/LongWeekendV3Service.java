@@ -1,6 +1,7 @@
 package com.github.flombois.services.v3;
 
 import com.github.flombois.models.v3.LongWeekendV3;
+import com.github.flombois.services.NagerDateService;
 import com.github.flombois.services.NagerDateServiceException;
 
 import java.time.Year;
@@ -17,7 +18,7 @@ import com.neovisionaries.i18n.CountryCode;
  *
  * @since 1.0
  */
-public interface LongWeekendV3Service {
+public interface LongWeekendV3Service extends NagerDateService {
 
     /** Default number of available bridge days (days off that can be used to extend a weekend). */
     int DEFAULT_AVAILABLE_BRIDGE_DAYS = 1;
