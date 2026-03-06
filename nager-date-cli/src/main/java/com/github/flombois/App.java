@@ -4,7 +4,6 @@ import com.beust.jcommander.JCommander;
 import com.github.flombois.commands.Command;
 
 import com.github.flombois.commands.Command.*;
-import com.github.flombois.models.VersionInfo;
 import com.github.flombois.services.NagerDateServiceException;
 
 import java.util.Map;
@@ -66,9 +65,7 @@ public class App {
     private static void showVersion() {
         try (final var inputStream = App.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")) {
             final var manifest = new Manifest(inputStream);
-            final var name = manifest.getAttributes("Name");
-            final var version = manifest.getAttributes("Version");
-            System.out.println(name + " " + version);
+            manifest.getMainAttributes().forEach((key, value) -> System.out.println(key + ": " + value));
         } catch (Exception e) {
             System.out.println("Failed to retrieve version information");
             exit(1);
