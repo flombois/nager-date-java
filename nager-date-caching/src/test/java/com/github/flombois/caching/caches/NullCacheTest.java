@@ -15,12 +15,12 @@ class NullCacheTest {
 
     @Test
     void putReturnsNull() {
-        assertNull(cache.put("key", "value"));
+        assertNull(cache.put("key", new CacheEntry<>("value")));
     }
 
     @Test
     void getAfterPutStillReturnsEmpty() {
-        cache.put("key", "value");
+        cache.put("key", new CacheEntry<>("value"));
         assertTrue(cache.get("key").isEmpty());
     }
 

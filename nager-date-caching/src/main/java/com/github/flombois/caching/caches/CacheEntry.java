@@ -18,7 +18,7 @@ public class CacheEntry<T> {
      * @param value the value to cache, must not be null
      * @throws NullPointerException if {@code value} is null
      */
-    protected CacheEntry(T value) {
+    public CacheEntry(T value) {
         Objects.requireNonNull(value, "Cached value must not be null");
         this.value = value;
     }

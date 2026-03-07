@@ -32,6 +32,18 @@ public class DefaultCachingStrategy<T> implements CachingStrategy<T> {
         this.cache = cache;
     }
 
+    /**
+     * Creates a {@link CacheEntry} for the given result.
+     * <p>
+     * Subclasses may override to create specialized entries (e.g., with type information).
+     * </p>
+     *
+     * @param result the value to wrap
+     * @return a new cache entry
+     */
+    protected CacheEntry<T> createEntry(T result) {
+        return new CacheEntry<>(result);
+    }
 
     @Override
     public T cacheCall(String key, Callable<T> service) throws CachedServiceException {
@@ -46,7 +58,7 @@ public class DefaultCachingStrategy<T> implements CachingStrategy<T> {
             } else {
                 // Cache miss
                 final var result = service.call();
-                cache.put(key, result);
+                cache.put(key, createEntry(result));
                 return result;
             }
         } catch (Exception e) {
