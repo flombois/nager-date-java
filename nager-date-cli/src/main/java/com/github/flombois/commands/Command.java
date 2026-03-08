@@ -9,6 +9,7 @@ import com.github.flombois.executors.GetLongWeekend;
 import com.github.flombois.executors.GetPublicHoliday;
 import com.github.flombois.executors.ListAllCountries;
 import com.github.flombois.executors.ServiceExecutor;
+import com.github.flombois.logging.LoggerConfiguration;
 import com.github.flombois.factories.CachedServicesFactory;
 import com.github.flombois.factories.HttpServicesFactory;
 import com.github.flombois.factories.NullCacheFactory;
@@ -34,6 +35,7 @@ import java.time.Year;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Base command class defining global CLI parameters shared across all subcommands.
@@ -69,6 +71,9 @@ public class Command {
 
     @Parameter(names = {"--cache-fs"}, description = "Enable filesystem caching of API responses (persists across invocations)")
     public boolean cacheFs = false;
+
+    @Parameter(names = {"--debug"}, description = "Enable debug logging")
+    public boolean debug = false;
 
     @Parameter(names = {"-u", "--url"}, description = "API base url", defaultValueDescription = "Target public API by default (https://date.nager.at)")
     public String baseUrl = "";
@@ -110,6 +115,8 @@ public class Command {
      */
     public static abstract class ServiceInvocationCommand<T> extends Command {
 
+        private static final Logger LOGGER = Logger.getLogger(ServiceInvocationCommand.class.getName());
+
         /**
          * Executes the command by building a context, invoking the service,
          * mapping the result, and printing it in the requested format.
@@ -118,8 +125,14 @@ public class Command {
          */
         public void execute() throws NagerDateServiceException {
 
+            // 0: Configure logging
+            LoggerConfiguration.configure(debug);
+
             // 1: Initialize context
             final Context context = buildContext();
+            LOGGER.info("Context: countryCode=%s, year=%s, format=%s, subdivision=%s, offset=%d, bridgeDays=%d"
+                    .formatted(context.countryCode(), context.year(), context.outputFormat(),
+                            context.subdivision(), context.offset(), context.availableBridgeDays()));
 
             // 2: Execute the service
             final T result = getServiceExecutor(getServicesFactory()).callService(context);
@@ -142,10 +155,13 @@ public class Command {
             CacheFactory cacheFactory;
             if (cacheFs) {
                 cacheFactory = new FileSystemCacheFactory(Path.of(".cache"));
+                LOGGER.info("Cache: filesystem (.cache/)");
             } else if (cache) {
                 cacheFactory = new HashMapCacheFactory();
+                LOGGER.info("Cache: in-memory");
             } else {
                 cacheFactory = new NullCacheFactory();
+                LOGGER.info("Cache: disabled");
             }
             return new CachedServicesFactory(
                     new HttpServicesFactory(newNagerDateHttpClient()),
@@ -164,7 +180,9 @@ public class Command {
          */
         protected NagerDateHttpClient newNagerDateHttpClient() {
             final boolean hasBaseUrl = !Objects.isNull(baseUrl) && !baseUrl.isBlank();
-            return hasBaseUrl ? new NagerDateHttpClient(baseUrl) : new NagerDateHttpClient();
+            NagerDateHttpClient client = hasBaseUrl ? new NagerDateHttpClient(baseUrl) : new NagerDateHttpClient();
+            LOGGER.info("Base URL: " + client.getBaseUrl());
+            return client;
         }
 
         /**
@@ -191,6 +209,7 @@ public class Command {
          * @param printableRecord the record to print
          */
         protected void printResult(Context ctx, PrintableRecord<T> printableRecord) {
+            LOGGER.info("Output format: " + ctx.outputFormat());
             ctx.outputFormat().print(printableRecord);
         }
 

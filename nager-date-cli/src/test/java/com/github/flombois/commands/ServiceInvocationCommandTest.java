@@ -17,6 +17,7 @@ class ServiceInvocationCommandTest {
         command.baseUrl = "";
         command.cache = false;
         command.cacheFs = false;
+        command.debug = false;
     }
 
     @Test

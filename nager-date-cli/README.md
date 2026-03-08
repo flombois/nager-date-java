@@ -70,6 +70,17 @@ The `--cache` and `--cache-fs` flags control caching behavior:
 | `--cache-fs` | `FileSystemCacheFactory` | Persistent JSON files in `.cache/` |
 | Both | `FileSystemCacheFactory` | `--cache-fs` takes priority |
 
+### Debug Logging
+
+The `--debug` flag enables `INFO`-level logging via `java.util.logging`. When enabled, the CLI logs:
+
+- Resolved context (country code, year, format, subdivision, offset, bridge days)
+- Cache factory selection (disabled, in-memory, filesystem)
+- Base URL being used (public endpoint or custom)
+- Output format used
+
+Without `--debug`, only `SEVERE`-level messages are logged (e.g., corrupt cache files).
+
 ### Output Formats
 
 The `OutputFormat` enum supports three formats via the `-f` flag:

@@ -6,6 +6,7 @@ import com.github.flombois.services.CachedServiceException;
 
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 /**
  * A {@link CachingStrategy} implementing the cache-aside pattern.
@@ -18,6 +19,8 @@ import java.util.concurrent.Callable;
  * @since 1.0
  */
 public class DefaultCachingStrategy<T> implements CachingStrategy<T> {
+
+    private static final Logger LOGGER = Logger.getLogger(DefaultCachingStrategy.class.getName());
 
     private final Cache<T> cache;
 
@@ -51,14 +54,14 @@ public class DefaultCachingStrategy<T> implements CachingStrategy<T> {
 
         try {
             if (cachedValue.isPresent()) {
-                // Cache Hit
+                LOGGER.info("Cache hit: " + key);
                 final CacheEntry<T> entry = cachedValue.get();
-                // Check entry status and return value
                 return entry.getValue();
             } else {
-                // Cache miss
+                LOGGER.info("Cache miss: " + key);
                 final var result = service.call();
                 cache.put(key, createEntry(result));
+                LOGGER.info("Cache store: " + key);
                 return result;
             }
         } catch (Exception e) {

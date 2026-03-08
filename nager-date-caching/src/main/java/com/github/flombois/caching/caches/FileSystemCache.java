@@ -11,6 +11,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link Cache} implementation that persists entries as JSON files on the filesystem.
@@ -25,6 +27,8 @@ import java.util.Optional;
  * @since 1.0
  */
 public class FileSystemCache<T> implements Cache<T> {
+
+    private static final Logger LOGGER = Logger.getLogger(FileSystemCache.class.getName());
 
     private final Path cacheDirectory;
     private final ObjectMapper objectMapper;
@@ -64,9 +68,10 @@ public class FileSystemCache<T> implements Cache<T> {
             final String typeCanonical = root.get("type").asText();
             final JavaType javaType = objectMapper.getTypeFactory().constructFromCanonical(typeCanonical);
             T data = objectMapper.convertValue(root.get("data"), javaType);
+            LOGGER.info("Cache file read: " + file);
             return Optional.of(new TypedCacheEntry<>(data, javaType));
         } catch (IOException e) {
-            // Corrupt or unreadable file — treat as cache miss
+            LOGGER.log(Level.SEVERE, "Corrupt or unreadable cache file: " + file, e);
             return Optional.empty();
         }
     }
@@ -81,6 +86,7 @@ public class FileSystemCache<T> implements Cache<T> {
             root.put("type", javaType.toCanonical());
             root.set("data", objectMapper.valueToTree(entry.getValue()));
             objectMapper.writeValue(file.toFile(), root);
+            LOGGER.info("Cache file written: " + file);
             return entry;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
