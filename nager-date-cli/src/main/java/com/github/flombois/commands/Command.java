@@ -5,8 +5,11 @@ import com.beust.jcommander.Parameters;
 import com.github.flombois.Context;
 import com.github.flombois.OutputFormat;
 import com.github.flombois.executors.GetCountryInfoWithBorders;
+import com.github.flombois.executors.GetLastHolidays;
 import com.github.flombois.executors.GetLongWeekend;
 import com.github.flombois.executors.GetPublicHoliday;
+import com.github.flombois.executors.GetSharedHolidays;
+import com.github.flombois.executors.GetWeekdayHolidays;
 import com.github.flombois.executors.ListAllCountries;
 import com.github.flombois.executors.ServiceExecutor;
 import com.github.flombois.logging.LoggerConfiguration;
@@ -19,19 +22,25 @@ import com.github.flombois.factories.caches.FileSystemCacheFactory;
 import com.github.flombois.factories.caches.HashMapCacheFactory;
 import com.github.flombois.http.NagerDateHttpClient;
 import com.github.flombois.models.CountryInfoWithBorders;
+import com.github.flombois.models.SharedHoliday;
+import com.github.flombois.models.WeekdayHolidayCount;
 import com.github.flombois.printers.PrintableCountryInfoWithBorders;
 import com.github.flombois.models.v3.CountryV3;
 import com.github.flombois.models.v3.LongWeekendV3;
 import com.github.flombois.models.v3.PublicHolidayV3;
 import com.github.flombois.printers.PrintableCountrySet;
 import com.github.flombois.printers.PrintableLongWeekendSet;
+import com.github.flombois.printers.PrintableLastHolidayList;
 import com.github.flombois.printers.PrintablePublicHolidaySet;
 import com.github.flombois.printers.PrintableRecord;
+import com.github.flombois.printers.PrintableSharedHolidayList;
+import com.github.flombois.printers.PrintableWeekdayHolidayCountList;
 import com.github.flombois.services.NagerDateServiceException;
 import com.neovisionaries.i18n.CountryCode;
 
 import java.nio.file.Path;
 import java.time.Year;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -346,6 +355,113 @@ public class Command {
             return new GetPublicHoliday(factory.createPublicHolidayV3Service());
         }
 
+    }
+
+    /**
+     * Subcommand that retrieves the last 3 celebrated public holidays for a country.
+     *
+     * @since 1.0
+     */
+    @Parameters(commandDescription = "Return the last 3 celebrated holidays (date and name)")
+    public static class LastHolidaysCommand extends ServiceInvocationCommand<List<PublicHolidayV3>> {
+
+        /** Singleton instance of this command. */
+        public static final LastHolidaysCommand INSTANCE = new LastHolidaysCommand();
+
+        private LastHolidaysCommand() {}
+
+        @Override
+        public String name() {
+            return "last-holidays";
+        }
+
+        @Override
+        protected PrintableRecord<List<PublicHolidayV3>> mapToPrintableRecord(List<PublicHolidayV3> result) {
+            return new PrintableLastHolidayList(result);
+        }
+
+        @Override
+        protected ServiceExecutor<List<PublicHolidayV3>> getServiceExecutor(ServicesFactory factory) {
+            return new GetLastHolidays(factory.createPublicHolidayV3Service());
+        }
+    }
+
+    /**
+     * Subcommand that counts weekday-only public holidays for multiple countries.
+     * <p>
+     * Accepts a comma-separated list of country codes via the {@code -ccs} flag.
+     * Results are sorted by count in descending order.
+     * </p>
+     *
+     * @since 1.0
+     */
+    @Parameters(commandDescription = "For each country, return the number of public holidays not falling on weekends (sorted descending)")
+    public static class WeekdayHolidaysCommand extends ServiceInvocationCommand<List<WeekdayHolidayCount>> {
+
+        /** Singleton instance of this command. */
+        public static final WeekdayHolidaysCommand INSTANCE = new WeekdayHolidaysCommand();
+
+        @Parameter(names = {"-ccs", "--country-codes"}, description = "Comma-separated list of ISO 3166-1 alpha-2 country codes (e.g., \"FR,DE,US\")",
+                converter = CountryCodeListConverter.class, required = true)
+        public List<CountryCode> countryCodes;
+
+        private WeekdayHolidaysCommand() {}
+
+        @Override
+        public String name() {
+            return "weekday-holidays";
+        }
+
+        @Override
+        protected PrintableRecord<List<WeekdayHolidayCount>> mapToPrintableRecord(List<WeekdayHolidayCount> result) {
+            return new PrintableWeekdayHolidayCountList(result);
+        }
+
+        @Override
+        protected ServiceExecutor<List<WeekdayHolidayCount>> getServiceExecutor(ServicesFactory factory) {
+            return new GetWeekdayHolidays(factory.createPublicHolidayV3Service(), countryCodes);
+        }
+    }
+
+    /**
+     * Subcommand that finds public holiday dates shared by two countries.
+     * <p>
+     * Accepts exactly 2 comma-separated country codes via the {@code -ccs} flag.
+     * Returns deduplicated dates with local names from each country, sorted by date.
+     * </p>
+     *
+     * @since 1.0
+     */
+    @Parameters(commandDescription = "Return the deduplicated list of dates celebrated in both countries (date + local names)")
+    public static class SharedHolidaysCommand extends ServiceInvocationCommand<List<SharedHoliday>> {
+
+        /** Singleton instance of this command. */
+        public static final SharedHolidaysCommand INSTANCE = new SharedHolidaysCommand();
+
+        @Parameter(names = {"-ccs", "--country-codes"}, description = "Exactly 2 comma-separated ISO 3166-1 alpha-2 country codes (e.g., \"FR,DE\")",
+                converter = CountryCodeListConverter.class, required = true)
+        public List<CountryCode> countryCodes;
+
+        private SharedHolidaysCommand() {}
+
+        @Override
+        public String name() {
+            return "shared-holidays";
+        }
+
+        @Override
+        protected PrintableRecord<List<SharedHoliday>> mapToPrintableRecord(List<SharedHoliday> result) {
+            return new PrintableSharedHolidayList(result);
+        }
+
+        @Override
+        protected ServiceExecutor<List<SharedHoliday>> getServiceExecutor(ServicesFactory factory) {
+            if (countryCodes.size() != 2) {
+                throw new IllegalArgumentException("Exactly 2 country codes are required, got " + countryCodes.size());
+            }
+            return new GetSharedHolidays(factory.createPublicHolidayV3Service(),
+                    countryCodes.get(0), countryCodes.get(1));
+        }
     }
 
 }

@@ -16,7 +16,8 @@ import static java.lang.System.exit;
  * Main entry point for the Nager Date CLI application.
  * <p>
  * Uses JCommander to parse command-line arguments and dispatch to the appropriate
- * subcommand: {@code countries}, {@code country}, {@code long-weekend}, or {@code public-holiday}.
+ * subcommand: {@code countries}, {@code country}, {@code long-weekend}, {@code public-holiday},
+ * {@code last-holidays}, {@code weekday-holidays}, or {@code shared-holidays}.
  * </p>
  *
  * @since 1.0
@@ -31,7 +32,10 @@ public class App {
             ListAllCountriesCommand.INSTANCE.name(), ListAllCountriesCommand.INSTANCE,
             CountryInfoCommand.INSTANCE.name(), CountryInfoCommand.INSTANCE,
             LongWeekendCommand.INSTANCE.name(), LongWeekendCommand.INSTANCE,
-            PublicHolidayCommand.INSTANCE.name(), PublicHolidayCommand.INSTANCE
+            PublicHolidayCommand.INSTANCE.name(), PublicHolidayCommand.INSTANCE,
+            LastHolidaysCommand.INSTANCE.name(), LastHolidaysCommand.INSTANCE,
+            WeekdayHolidaysCommand.INSTANCE.name(), WeekdayHolidaysCommand.INSTANCE,
+            SharedHolidaysCommand.INSTANCE.name(), SharedHolidaysCommand.INSTANCE
     );
 
     private static final JCommander cmd = buildJCommander();

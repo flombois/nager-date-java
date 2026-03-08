@@ -23,12 +23,15 @@ java -jar nager-date-cli/target/nager-date-cli-1.0-SNAPSHOT.jar <command> [optio
 
 ### Commands
 
-| Command          | Description                              |
-|------------------|------------------------------------------|
-| `public-holiday` | List public holidays for a country/year  |
-| `long-weekend`   | Find long weekend opportunities          |
-| `countries`      | List all available countries             |
-| `country`        | Get detailed country info with borders   |
+| Command            | Description                              |
+|--------------------|------------------------------------------|
+| `public-holiday`   | List public holidays for a country/year  |
+| `long-weekend`     | Find long weekend opportunities          |
+| `countries`        | List all available countries             |
+| `country`          | Get detailed country info with borders   |
+| `last-holidays`    | Return the last 3 celebrated holidays    |
+| `weekday-holidays` | Count holidays not on weekends per country (sorted desc) |
+| `shared-holidays`  | Find holiday dates shared by 2 countries |
 
 ### Global Options
 
@@ -44,6 +47,7 @@ java -jar nager-date-cli/target/nager-date-cli-1.0-SNAPSHOT.jar <command> [optio
 | `--cache-fs`                    | Enable filesystem caching (persists across invocations) | Disabled |
 | `--debug`                       | Enable debug logging (INFO level)          | Disabled       |
 | `-u, --url`                     | Custom API base URL                        | date.nager.at  |
+| `-ccs, --country-codes`         | Comma-separated country codes (for `weekday-holidays`, `shared-holidays`) |  |
 | `-h, --help`                    | Show help message                          |                |
 | `-v, --version`                 | Show version info                          |                |
 
@@ -61,6 +65,15 @@ java -jar nager-date-cli.jar countries -f JSON
 
 # Country info for Belgium with caching enabled
 java -jar nager-date-cli.jar country -cc BE -c
+
+# Last 3 celebrated holidays in France
+java -jar nager-date-cli.jar last-holidays -cc FR
+
+# Weekday holidays count for multiple countries in 2026
+java -jar nager-date-cli.jar weekday-holidays -y 2026 -ccs FR,DE,US
+
+# Shared holiday dates between France and Germany
+java -jar nager-date-cli.jar shared-holidays -y 2026 -ccs FR,DE
 ```
 
 ## Project Structure
