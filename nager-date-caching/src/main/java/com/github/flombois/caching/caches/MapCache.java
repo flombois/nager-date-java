@@ -32,8 +32,7 @@ public class MapCache<T> implements Cache<T> {
     }
 
     @Override
-    public CacheEntry<T> put(String key, T object) {
-        final var entry = new CacheEntry<>(object);
+    public CacheEntry<T> put(String key, CacheEntry<T> entry) {
         cacheMap.put(key, entry);
         return entry;
     }

@@ -20,7 +20,7 @@ public class NullCache<T> implements Cache<T> {
     }
 
     @Override
-    public CacheEntry<T> put(String key, T object) {
+    public CacheEntry<T> put(String key, CacheEntry<T> entry) {
         return null;
     }
 

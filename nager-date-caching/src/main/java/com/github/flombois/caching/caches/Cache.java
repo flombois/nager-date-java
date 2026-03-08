@@ -19,13 +19,13 @@ public interface Cache<T> {
     Optional<CacheEntry<T>> get(String key);
 
     /**
-     * Stores a value in the cache under the given key, replacing any existing entry.
+     * Stores an entry in the cache under the given key, replacing any existing entry.
      *
-     * @param key    the cache key
-     * @param object the value to cache
-     * @return the {@link CacheEntry} wrapping the stored value
+     * @param key   the cache key
+     * @param entry the cache entry to store
+     * @return the stored {@link CacheEntry}
      */
-    CacheEntry<T> put(String key, T object);
+    CacheEntry<T> put(String key, CacheEntry<T> entry);
 
     /**
      * Removes the cache entry associated with the given key, if present.
@@ -40,13 +40,13 @@ public interface Cache<T> {
     void clear();
 
     /**
-     * Stores a value in the cache only if no entry exists for the given key.
+     * Stores an entry in the cache only if no entry exists for the given key.
      *
      * @param key   the cache key
-     * @param value the value to cache if absent
-     * @return the existing {@link CacheEntry} if present, or the newly created entry
+     * @param entry the cache entry to store if absent
+     * @return the existing {@link CacheEntry} if present, or the newly stored entry
      */
-    default CacheEntry<T> putIfAbsent(String key, T value) {
-        return get(key).orElseGet(() -> put(key, value));
+    default CacheEntry<T> putIfAbsent(String key, CacheEntry<T> entry) {
+        return get(key).orElseGet(() -> put(key, entry));
     }
 }

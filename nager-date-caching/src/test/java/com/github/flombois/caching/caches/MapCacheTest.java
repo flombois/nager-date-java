@@ -23,7 +23,7 @@ class MapCacheTest {
 
     @Test
     void putThenGetReturnsValue() {
-        cache.put("key", "value");
+        cache.put("key", new CacheEntry<>("value"));
         var result = cache.get("key");
         assertTrue(result.isPresent());
         assertEquals("value", result.get().getValue());
@@ -31,21 +31,21 @@ class MapCacheTest {
 
     @Test
     void putReturnsEntry() {
-        var entry = cache.put("key", "value");
+        var entry = cache.put("key", new CacheEntry<>("value"));
         assertNotNull(entry);
         assertEquals("value", entry.getValue());
     }
 
     @Test
     void putOverwritesExistingEntry() {
-        cache.put("key", "first");
-        cache.put("key", "second");
+        cache.put("key", new CacheEntry<>("first"));
+        cache.put("key", new CacheEntry<>("second"));
         assertEquals("second", cache.get("key").get().getValue());
     }
 
     @Test
     void evictRemovesEntry() {
-        cache.put("key", "value");
+        cache.put("key", new CacheEntry<>("value"));
         cache.evict("key");
         assertTrue(cache.get("key").isEmpty());
     }
@@ -57,8 +57,8 @@ class MapCacheTest {
 
     @Test
     void clearRemovesAllEntries() {
-        cache.put("a", "1");
-        cache.put("b", "2");
+        cache.put("a", new CacheEntry<>("1"));
+        cache.put("b", new CacheEntry<>("2"));
         cache.clear();
         assertTrue(cache.get("a").isEmpty());
         assertTrue(cache.get("b").isEmpty());
@@ -66,15 +66,15 @@ class MapCacheTest {
 
     @Test
     void putIfAbsentStoresOnMiss() {
-        var entry = cache.putIfAbsent("key", "value");
+        var entry = cache.putIfAbsent("key", new CacheEntry<>("value"));
         assertEquals("value", entry.getValue());
         assertEquals("value", cache.get("key").get().getValue());
     }
 
     @Test
     void putIfAbsentReturnsExistingOnHit() {
-        cache.put("key", "first");
-        var entry = cache.putIfAbsent("key", "second");
+        cache.put("key", new CacheEntry<>("first"));
+        var entry = cache.putIfAbsent("key", new CacheEntry<>("second"));
         assertEquals("first", entry.getValue());
     }
 }

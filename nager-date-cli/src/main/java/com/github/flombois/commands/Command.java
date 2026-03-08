@@ -14,6 +14,7 @@ import com.github.flombois.factories.HttpServicesFactory;
 import com.github.flombois.factories.NullCacheFactory;
 import com.github.flombois.factories.ServicesFactory;
 import com.github.flombois.factories.caches.CacheFactory;
+import com.github.flombois.factories.caches.FileSystemCacheFactory;
 import com.github.flombois.factories.caches.HashMapCacheFactory;
 import com.github.flombois.http.NagerDateHttpClient;
 import com.github.flombois.models.CountryInfoWithBorders;
@@ -28,6 +29,7 @@ import com.github.flombois.printers.PrintableRecord;
 import com.github.flombois.services.NagerDateServiceException;
 import com.neovisionaries.i18n.CountryCode;
 
+import java.nio.file.Path;
 import java.time.Year;
 import java.util.Locale;
 import java.util.Objects;
@@ -64,6 +66,9 @@ public class Command {
 
     @Parameter(names = {"-c", "--cache"}, description = "Enable in-memory caching of API responses")
     public boolean cache = false;
+
+    @Parameter(names = {"--cache-fs"}, description = "Enable filesystem caching of API responses (persists across invocations)")
+    public boolean cacheFs = false;
 
     @Parameter(names = {"-u", "--url"}, description = "API base url", defaultValueDescription = "Target public API by default (https://date.nager.at)")
     public String baseUrl = "";
@@ -134,7 +139,14 @@ public class Command {
          * @return the services factory
          */
         protected ServicesFactory getServicesFactory() {
-            CacheFactory cacheFactory = cache ? new HashMapCacheFactory() : new NullCacheFactory();
+            CacheFactory cacheFactory;
+            if (cacheFs) {
+                cacheFactory = new FileSystemCacheFactory(Path.of(".cache"));
+            } else if (cache) {
+                cacheFactory = new HashMapCacheFactory();
+            } else {
+                cacheFactory = new NullCacheFactory();
+            }
             return new CachedServicesFactory(
                     new HttpServicesFactory(newNagerDateHttpClient()),
                     cacheFactory

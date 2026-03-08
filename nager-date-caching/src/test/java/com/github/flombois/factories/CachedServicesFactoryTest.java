@@ -2,7 +2,11 @@ package com.github.flombois.factories;
 
 import com.github.flombois.caching.caches.Cache;
 import com.github.flombois.caching.caches.MapCache;
+import com.github.flombois.caching.strategies.CachingStrategy;
+import com.github.flombois.caching.strategies.DefaultCachingStrategy;
+import com.github.flombois.caching.strategies.FileSystemCachingStrategy;
 import com.github.flombois.factories.caches.CacheFactory;
+import com.github.flombois.factories.caches.FileSystemCacheFactory;
 import com.github.flombois.services.v3.CachedCountryV3Service;
 import com.github.flombois.services.v3.CachedLongWeekendV3Service;
 import com.github.flombois.services.v3.CachedPublicHolidayV3Service;
@@ -12,9 +16,11 @@ import com.github.flombois.services.v3.PublicHolidayV3Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,5 +106,20 @@ class CachedServicesFactoryTest {
         when(delegateFactory.createPublicHolidayV3Service()).thenReturn(publicHolidayService);
         factory.createPublicHolidayV3Service();
         verify(delegateFactory).createPublicHolidayV3Service();
+    }
+
+    @Test
+    void createCachingStrategyReturnsDefaultForNonFileSystemFactory() {
+        CachingStrategy<String> strategy = factory.createCachingStrategy(String.class);
+        assertInstanceOf(DefaultCachingStrategy.class, strategy);
+        assertFalse(strategy instanceof FileSystemCachingStrategy);
+    }
+
+    @Test
+    void createCachingStrategyReturnsFileSystemStrategyForFileSystemFactory(@TempDir Path tempDir) {
+        var fsFactory = new CachedServicesFactory(delegateFactory,
+                new FileSystemCacheFactory(tempDir.resolve("cache")));
+        CachingStrategy<String> strategy = fsFactory.createCachingStrategy(String.class);
+        assertInstanceOf(FileSystemCachingStrategy.class, strategy);
     }
 }
