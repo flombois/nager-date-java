@@ -42,6 +42,7 @@ java -jar nager-date-cli/target/nager-date-cli-1.0-SNAPSHOT.jar <command> [optio
 | `-b, --available-bridge-days`   | Max bridge days for long weekends (1-100)  | `1`            |
 | `-c, --cache`                   | Enable in-memory caching of API responses  | Disabled       |
 | `--cache-fs`                    | Enable filesystem caching (persists across invocations) | Disabled |
+| `--debug`                       | Enable debug logging (INFO level)          | Disabled       |
 | `-u, --url`                     | Custom API base URL                        | date.nager.at  |
 | `-h, --help`                    | Show help message                          |                |
 | `-v, --version`                 | Show version info                          |                |

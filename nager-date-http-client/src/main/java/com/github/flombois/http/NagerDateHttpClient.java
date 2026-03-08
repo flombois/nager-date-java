@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.logging.Logger;
 
 /**
  * HTTP client for the Nager.Date REST API.
@@ -20,6 +21,8 @@ import java.time.Duration;
  * @since 1.0
  */
 public class NagerDateHttpClient {
+
+    private static final Logger LOGGER = Logger.getLogger(NagerDateHttpClient.class.getName());
 
     /** The public base URL of the Nager.Date service. */
     public static final String PUBLIC_BASE_URL = "https://date.nager.at";
@@ -94,7 +97,12 @@ public class NagerDateHttpClient {
      */
     public <T> T callApi(String path, ResponseHandler<T> responseHandler) throws ApiCallException {
         try {
-            final var response = httpClient.send(newHttpGetRequest(path), HttpResponse.BodyHandlers.ofByteArray());
+            final var request = newHttpGetRequest(path);
+            LOGGER.info("HTTP GET " + request.uri());
+            final long start = System.currentTimeMillis();
+            final var response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            final long duration = System.currentTimeMillis() - start;
+            LOGGER.info("HTTP %d (%d ms)".formatted(response.statusCode(), duration));
             return responseHandler.handle(response);
         } catch (IOException | InterruptedException e) {
             throw new ApiCallException(e);
