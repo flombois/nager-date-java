@@ -41,6 +41,7 @@ java -jar nager-date-cli/target/nager-date-cli-1.0-SNAPSHOT.jar <command> [optio
 | `-o, --offset`                  | UTC timezone offset (-12 to +12)           |                |
 | `-b, --available-bridge-days`   | Max bridge days for long weekends (1-100)  | `1`            |
 | `-c, --cache`                   | Enable in-memory caching of API responses  | Disabled       |
+| `--cache-fs`                    | Enable filesystem caching (persists across invocations) | Disabled |
 | `-u, --url`                     | Custom API base URL                        | date.nager.at  |
 | `-h, --help`                    | Show help message                          |                |
 | `-v, --version`                 | Show version info                          |                |
@@ -64,12 +65,19 @@ java -jar nager-date-cli.jar country -cc BE -c
 ## Project Structure
 
 ```
-nager-date-cli/
+nager-date-java/
 ├── nager-date-api/            # Models and service interfaces
 ├── nager-date-http-client/    # HTTP client implementation
 ├── nager-date-caching/        # Caching decorator layer
 └── nager-date-cli/            # CLI application (JCommander)
 ```
+
+### Module Documentation
+
+- [nager-date-api](nager-date-api/README.md) - Core interfaces, models, and factory contracts (zero external dependencies)
+- [nager-date-http-client](nager-date-http-client/README.md) - HTTP service implementations using `java.net.http` and Jackson
+- [nager-date-caching](nager-date-caching/README.md) - Caching decorator layer with in-memory and filesystem backends
+- [nager-date-cli](nager-date-cli/README.md) - JCommander CLI application and entry point
 
 ## Testing
 
