@@ -53,8 +53,6 @@ Strategy interface dispatching HTTP responses by status code (200, 204, 400, 404
 
 ## Testing
 
-30 tests across 5 test classes using WireMock for HTTP integration tests and Mockito for unit tests.
-
 ```bash
 mvn test -pl nager-date-http-client
 ```

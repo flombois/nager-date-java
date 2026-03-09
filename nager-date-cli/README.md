@@ -26,14 +26,24 @@ com.github.flombois
 │   │   ├── ListAllCountriesCommand   # `countries` subcommand
 │   │   ├── CountryInfoCommand        # `country` subcommand
 │   │   ├── LongWeekendCommand        # `long-weekend` subcommand
-│   │   └── PublicHolidayCommand      # `public-holiday` subcommand
+│   │   ├── PublicHolidayCommand      # `public-holiday` subcommand
+│   │   ├── LastHolidaysCommand       # `last-holidays` subcommand
+│   │   ├── WeekdayHolidaysCommand    # `weekday-holidays` subcommand
+│   │   └── SharedHolidaysCommand     # `shared-holidays` subcommand
+│   ├── CountryCodeListConverter      # JCommander converter for comma-separated country codes
 │   └── YearConverter                 # JCommander year string converter
 ├── executors/
 │   ├── ServiceExecutor               # Functional interface for service invocation
 │   ├── ListAllCountries              # Delegates to CountryV3Service.getAllCountries()
 │   ├── GetCountryInfoWithBorders     # Delegates to CountryV3Service.getCountryInfoWithBorders()
 │   ├── GetPublicHoliday              # Delegates to PublicHolidayV3Service.getPublicHolidays()
-│   └── GetLongWeekend                # Delegates to LongWeekendV3Service.getLongWeekend()
+│   ├── GetLongWeekend                # Delegates to LongWeekendV3Service.getLongWeekend()
+│   ├── GetLastHolidays               # Retrieves last 3 celebrated holidays for a country
+│   ├── GetWeekdayHolidays            # Counts holidays not on weekends per country (sorted desc)
+│   └── GetSharedHolidays             # Finds deduplicated holiday dates shared by 2 countries
+├── models/
+│   ├── SharedHoliday                 # Record for shared holiday output (date + local names)
+│   └── WeekdayHolidayCount           # Record for weekday holiday count output (country + count)
 └── printers/
     ├── PrintableRecord               # Interface for format-aware output
     ├── PrintableCountryV3             # Single country (JSON, PLAIN)
@@ -43,6 +53,9 @@ com.github.flombois
     ├── PrintablePublicHolidaySet      # Holiday set (JSON, PLAIN, TABLE)
     ├── PrintableLongWeekendV3         # Single long weekend (JSON, PLAIN)
     ├── PrintableLongWeekendSet        # Long weekend set (JSON, PLAIN, TABLE)
+    ├── PrintableLastHolidayList       # Last 3 holidays list (JSON, PLAIN, TABLE)
+    ├── PrintableWeekdayHolidayCountList # Weekday holiday counts (JSON, PLAIN, TABLE)
+    ├── PrintableSharedHolidayList     # Shared holidays list (JSON, PLAIN, TABLE)
     └── TableFormatter                 # Fixed-width column table formatting utility
 ```
 
@@ -90,8 +103,6 @@ The `OutputFormat` enum supports three formats via the `-f` flag:
 - **TABLE** - Fixed-width column table (only for collection results)
 
 ## Testing
-
-18 test classes covering commands, executors, printers, and output formatting.
 
 ```bash
 mvn test -pl nager-date-cli

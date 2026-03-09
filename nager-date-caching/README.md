@@ -75,8 +75,6 @@ CachedServicesFactory ──wraps──> ServicesFactory (from api module)
 
 ## Testing
 
-17 test classes covering caches, strategies, factories, and cached service decorators.
-
 ```bash
 mvn test -pl nager-date-caching
 ```
