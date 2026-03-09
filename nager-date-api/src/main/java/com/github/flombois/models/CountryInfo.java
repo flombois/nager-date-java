@@ -2,6 +2,8 @@ package com.github.flombois.models;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import java.util.Objects;
+
 /**
  * Represents information about a country.
  * <p>
@@ -90,5 +92,20 @@ public class CountryInfo {
      */
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CountryInfo that)) return false;
+        return Objects.equals(countryCode, that.countryCode)
+                && Objects.equals(commonName, that.commonName)
+                && Objects.equals(officialName, that.officialName)
+                && Objects.equals(region, that.region);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(countryCode, commonName, officialName, region);
     }
 }

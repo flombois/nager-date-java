@@ -2,6 +2,8 @@ package com.github.flombois.models.v3;
 
 import com.neovisionaries.i18n.CountryCode;
 
+import java.util.Objects;
+
 /**
  * Represents a country from the Nager.Date API v3.
  * <p>
@@ -50,6 +52,18 @@ public class CountryV3 {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CountryV3 that)) return false;
+        return Objects.equals(countryCode, that.countryCode) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(countryCode, name);
     }
 
 }

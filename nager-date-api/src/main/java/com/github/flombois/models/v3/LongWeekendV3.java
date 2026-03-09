@@ -1,6 +1,8 @@
 package com.github.flombois.models.v3;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a long weekend opportunity from the Nager.Date API v3.
@@ -108,5 +110,22 @@ public class LongWeekendV3 {
      */
     public void setNeedBridgeDay(boolean needBridgeDay) {
         this.needBridgeDay = needBridgeDay;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LongWeekendV3 that)) return false;
+        return dayCount == that.dayCount && needBridgeDay == that.needBridgeDay
+                && Objects.equals(startDate, that.startDate)
+                && Objects.equals(endDate, that.endDate)
+                && Arrays.equals(bridgeDays, that.bridgeDays);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(dayCount, startDate, endDate, needBridgeDay);
+        result = 31 * result + Arrays.hashCode(bridgeDays);
+        return result;
     }
 }

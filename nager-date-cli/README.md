@@ -30,7 +30,7 @@ com.github.flombois
 │   │   ├── LastHolidaysCommand       # `last-holidays` subcommand
 │   │   ├── WeekdayHolidaysCommand    # `weekday-holidays` subcommand
 │   │   └── SharedHolidaysCommand     # `shared-holidays` subcommand
-│   ├── CountryCodeListConverter      # JCommander converter for comma-separated country codes
+│   ├── CountryCodeSetConverter        # JCommander converter for comma-separated country codes
 │   └── YearConverter                 # JCommander year string converter
 ├── executors/
 │   ├── ServiceExecutor               # Functional interface for service invocation

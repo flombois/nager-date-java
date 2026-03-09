@@ -4,6 +4,7 @@ import com.github.flombois.models.HolidayType;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.Objects;
 import com.neovisionaries.i18n.CountryCode;
 import java.util.Set;
 
@@ -188,6 +189,22 @@ public class PublicHolidayV3 {
      */
     public void setLaunchYear(Year launchYear) {
         this.launchYear = launchYear;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PublicHolidayV3 that)) return false;
+        return fixed == that.fixed && global == that.global
+                && Objects.equals(countryCode, that.countryCode)
+                && Objects.equals(date, that.date)
+                && Objects.equals(localName, that.localName)
+                && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(countryCode, date, localName, name, fixed, global);
     }
 
 }

@@ -14,8 +14,9 @@ class NullCacheTest {
     }
 
     @Test
-    void putReturnsNull() {
-        assertNull(cache.put("key", new CacheEntry<>("value")));
+    void putReturnsACacheEntryWithNullValue() {
+        final var entry = new CacheEntry<>("value");
+        assertEquals(entry, cache.put("key",entry));
     }
 
     @Test

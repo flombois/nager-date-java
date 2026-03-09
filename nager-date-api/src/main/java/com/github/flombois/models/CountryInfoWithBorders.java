@@ -1,5 +1,6 @@
 package com.github.flombois.models;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.neovisionaries.i18n.CountryCode;
@@ -33,5 +34,18 @@ public class CountryInfoWithBorders extends CountryInfo {
      */
     public void setBorders(Set<CountryInfo> borders) {
         this.borders = borders;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CountryInfoWithBorders that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(borders, that.borders);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * super.hashCode() + Objects.hashCode(borders);
     }
 }
