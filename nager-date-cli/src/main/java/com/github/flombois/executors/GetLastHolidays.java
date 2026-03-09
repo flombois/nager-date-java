@@ -56,14 +56,14 @@ public class GetLastHolidays implements ServiceExecutor<List<PublicHolidayV3>> {
             getPublicHoliday(countryCode, year).stream()
                     .filter(h -> !h.getDate().isAfter(today))
                     .sorted(Comparator.comparing(PublicHolidayV3::getDate).reversed())
+                    .limit(LIMIT - result.size())
                     .forEach(result::add);
 
             year = year.minusYears(1);
             iterations++;
         }
 
-        // Already in descending order (current year first, then previous years)
-        return result.stream().limit(LIMIT).toList();
+        return result;
     }
 
     private Set<PublicHolidayV3> getPublicHoliday(CountryCode code, Year year) throws NagerDateServiceException {

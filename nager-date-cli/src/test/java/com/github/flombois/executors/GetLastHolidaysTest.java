@@ -138,6 +138,74 @@ class GetLastHolidaysTest {
     }
 
     @Test
+    void returnsFewerThanLimitWhenNotEnoughHolidaysExist() throws NagerDateServiceException {
+        when(context.countryCode()).thenReturn(CountryCode.FR);
+
+        // Only 2 past holidays across all 5 years
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now()))
+                .thenReturn(Set.of(holiday(LocalDate.now().minusDays(5), "One")));
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now().minusYears(1)))
+                .thenReturn(Set.of(holiday(LocalDate.now().minusYears(1).minusDays(10), "Two")));
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now().minusYears(2)))
+                .thenReturn(Set.of());
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now().minusYears(3)))
+                .thenReturn(Set.of());
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now().minusYears(4)))
+                .thenReturn(Set.of());
+
+        var executor = new GetLastHolidays(publicHolidayV3Service);
+        List<PublicHolidayV3> result = executor.callService(context);
+
+        assertEquals(2, result.size());
+        verify(publicHolidayV3Service, times(5)).getPublicHolidays(any(), any());
+    }
+
+    @Test
+    void doesNotFetchPreviousYearWhenExactlyLimitFound() throws NagerDateServiceException {
+        when(context.countryCode()).thenReturn(CountryCode.FR);
+
+        var h1 = holiday(LocalDate.now().minusDays(30), "Holiday 1");
+        var h2 = holiday(LocalDate.now().minusDays(20), "Holiday 2");
+        var h3 = holiday(LocalDate.now().minusDays(10), "Holiday 3");
+
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, Year.now()))
+                .thenReturn(Set.of(h1, h2, h3));
+
+        var executor = new GetLastHolidays(publicHolidayV3Service);
+        List<PublicHolidayV3> result = executor.callService(context);
+
+        assertEquals(3, result.size());
+        verify(publicHolidayV3Service, times(1)).getPublicHolidays(any(), any());
+    }
+
+    @Test
+    void maintainsDescendingOrderAcrossYears() throws NagerDateServiceException {
+        when(context.countryCode()).thenReturn(CountryCode.FR);
+        Year currentYear = Year.now();
+
+        var thisYear = holiday(LocalDate.now().minusDays(5), "This Year");
+        var lastYear1 = holiday(LocalDate.now().minusYears(1).minusDays(10), "Last Year Recent");
+        var lastYear2 = holiday(LocalDate.now().minusYears(1).minusDays(30), "Last Year Old");
+
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, currentYear))
+                .thenReturn(Set.of(thisYear));
+        when(publicHolidayV3Service.getPublicHolidays(CountryCode.FR, currentYear.minusYears(1)))
+                .thenReturn(Set.of(lastYear1, lastYear2));
+
+        var executor = new GetLastHolidays(publicHolidayV3Service);
+        List<PublicHolidayV3> result = executor.callService(context);
+
+        assertEquals(3, result.size());
+        assertEquals("This Year", result.get(0).getName());
+        assertEquals("Last Year Recent", result.get(1).getName());
+        assertEquals("Last Year Old", result.get(2).getName());
+        // Verify strictly descending
+        for (int i = 0; i < result.size() - 1; i++) {
+            assertTrue(result.get(i).getDate().isAfter(result.get(i + 1).getDate()));
+        }
+    }
+
+    @Test
     void constructorRejectsNull() {
         assertThrows(NullPointerException.class, () -> new GetLastHolidays(null));
     }
