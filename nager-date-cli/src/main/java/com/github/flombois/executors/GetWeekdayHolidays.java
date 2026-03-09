@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Service executor that counts weekday-only public holidays for multiple countries.
@@ -26,7 +27,11 @@ import java.util.Set;
  */
 public class GetWeekdayHolidays implements ServiceExecutor<List<WeekdayHolidayCount>> {
 
-    private static final Set<DayOfWeek> WEEKEND = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private static final Predicate<PublicHolidayV3> isWeekday = h -> {
+        final DayOfWeek dayOfWeek = h.getDate().getDayOfWeek();
+        return !(DayOfWeek.SATURDAY.equals(dayOfWeek) || DayOfWeek.SUNDAY.equals(dayOfWeek));
+    };
+
 
     private final PublicHolidayV3Service publicHolidayV3Service;
     private final Set<CountryCode> countryCodes;
@@ -51,13 +56,12 @@ public class GetWeekdayHolidays implements ServiceExecutor<List<WeekdayHolidayCo
 
         for (CountryCode countryCode : countryCodes) {
             Set<PublicHolidayV3> holidays = publicHolidayV3Service.getPublicHolidays(countryCode, context.year());
-            int weekdayCount = (int) holidays.stream()
-                    .filter(h -> !WEEKEND.contains(h.getDate().getDayOfWeek()))
-                    .count();
+            int weekdayCount = (int) holidays.stream().filter(isWeekday).count();
             results.add(new WeekdayHolidayCount(countryCode, weekdayCount));
         }
 
         results.sort(Comparator.comparingInt(WeekdayHolidayCount::count).reversed());
         return results;
     }
+
 }
