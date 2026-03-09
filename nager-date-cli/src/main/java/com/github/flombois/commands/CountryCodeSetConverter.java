@@ -25,6 +25,6 @@ public class CountryCodeSetConverter implements IStringConverter<Set<CountryCode
         return Arrays.stream(value.split(","))
                 .map(String::trim)
                 .map(CountryCode::valueOf)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toSet());
     }
 }

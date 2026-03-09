@@ -5,15 +5,12 @@ import com.github.flombois.executors.GetSharedHolidays;
 import com.github.flombois.factories.ServicesFactory;
 import com.github.flombois.printers.PrintableSharedHolidayList;
 import com.github.flombois.services.v3.PublicHolidayV3Service;
-import com.neovisionaries.i18n.CountryCode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -42,7 +39,7 @@ class SharedHolidaysCommandTest {
     @Test
     void getServiceExecutorReturnsGetSharedHolidays() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = new LinkedHashSet<>(List.of(CountryCode.FR, CountryCode.DE));
+        spy.countryCodes = "FR,DE";
         when(servicesFactory.createPublicHolidayV3Service()).thenReturn(publicHolidayV3Service);
         var executor = spy.getServiceExecutor(servicesFactory);
         assertInstanceOf(GetSharedHolidays.class, executor);
@@ -51,14 +48,14 @@ class SharedHolidaysCommandTest {
     @Test
     void getServiceExecutorRejectsWrongNumberOfCountryCodes() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = Set.of(CountryCode.FR);
+        spy.countryCodes = "FR";
         assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
     }
 
     @Test
     void getServiceExecutorRejectsThreeCountryCodes() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = Set.of(CountryCode.FR, CountryCode.DE, CountryCode.US);
+        spy.countryCodes = "FR,DE,US";
         assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
     }
 
@@ -66,7 +63,7 @@ class SharedHolidaysCommandTest {
     void getServiceExecutorRejectsDuplicateCountryCodes() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
         // "FR,FR" through the converter produces a Set with 1 element
-        spy.countryCodes = Set.of(CountryCode.FR);
+        spy.countryCodes = "FR,FR";
         assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
     }
 }

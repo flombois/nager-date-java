@@ -5,14 +5,12 @@ import com.github.flombois.executors.GetWeekdayHolidays;
 import com.github.flombois.factories.ServicesFactory;
 import com.github.flombois.printers.PrintableWeekdayHolidayCountList;
 import com.github.flombois.services.v3.PublicHolidayV3Service;
-import com.neovisionaries.i18n.CountryCode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +39,7 @@ class WeekdayHolidaysCommandTest {
     @Test
     void getServiceExecutorReturnsGetWeekdayHolidays() {
         var spy = spy(WeekdayHolidaysCommand.INSTANCE);
-        spy.countryCodes = Set.of(CountryCode.FR, CountryCode.DE);
+        spy.countryCodes = "FR,DE";
         when(servicesFactory.createPublicHolidayV3Service()).thenReturn(publicHolidayV3Service);
         var executor = spy.getServiceExecutor(servicesFactory);
         assertInstanceOf(GetWeekdayHolidays.class, executor);
