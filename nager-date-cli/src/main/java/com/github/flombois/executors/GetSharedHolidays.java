@@ -36,14 +36,18 @@ public class GetSharedHolidays implements ServiceExecutor<List<SharedHoliday>> {
      *
      * @param publicHolidayV3Service the public holiday service to delegate to, must not be null
      * @param countryCode1           the first country code, must not be null
-     * @param countryCode2           the second country code, must not be null
-     * @throws NullPointerException if any argument is null
+     * @param countryCode2           the second country code, must not be null and must differ from countryCode1
+     * @throws NullPointerException     if any argument is null
+     * @throws IllegalArgumentException if both country codes are equal
      */
     public GetSharedHolidays(PublicHolidayV3Service publicHolidayV3Service,
                              CountryCode countryCode1, CountryCode countryCode2) {
         Objects.requireNonNull(publicHolidayV3Service);
         Objects.requireNonNull(countryCode1);
         Objects.requireNonNull(countryCode2);
+        if (countryCode1.equals(countryCode2)) {
+            throw new IllegalArgumentException("Country codes must be different");
+        }
         this.publicHolidayV3Service = publicHolidayV3Service;
         this.countryCode1 = countryCode1;
         this.countryCode2 = countryCode2;

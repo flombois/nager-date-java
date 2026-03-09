@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ class GetWeekdayHolidaysTest {
         when(publicHolidayV3Service.getPublicHolidays(CountryCode.DE, Year.of(2026)))
                 .thenReturn(Set.of(deHoliday1));
 
-        var executor = new GetWeekdayHolidays(publicHolidayV3Service, List.of(CountryCode.FR, CountryCode.DE));
+        var executor = new GetWeekdayHolidays(publicHolidayV3Service, new LinkedHashSet<>(List.of(CountryCode.FR, CountryCode.DE)));
         List<WeekdayHolidayCount> result = executor.callService(context);
 
         assertEquals(2, result.size());
@@ -63,7 +64,7 @@ class GetWeekdayHolidaysTest {
         when(publicHolidayV3Service.getPublicHolidays(CountryCode.US, Year.of(2026)))
                 .thenReturn(Set.of(satHoliday, sunHoliday));
 
-        var executor = new GetWeekdayHolidays(publicHolidayV3Service, List.of(CountryCode.US));
+        var executor = new GetWeekdayHolidays(publicHolidayV3Service, new LinkedHashSet<>(List.of(CountryCode.US)));
         List<WeekdayHolidayCount> result = executor.callService(context);
 
         assertEquals(1, result.size());
@@ -73,7 +74,7 @@ class GetWeekdayHolidaysTest {
     @Test
     void constructorRejectsNullService() {
         assertThrows(NullPointerException.class,
-                () -> new GetWeekdayHolidays(null, List.of(CountryCode.FR)));
+                () -> new GetWeekdayHolidays(null, Set.of(CountryCode.FR)));
     }
 
     @Test

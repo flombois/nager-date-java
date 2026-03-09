@@ -88,6 +88,12 @@ class GetSharedHolidaysTest {
     }
 
     @Test
+    void constructorRejectsEqualCountryCodes() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new GetSharedHolidays(publicHolidayV3Service, CountryCode.FR, CountryCode.FR));
+    }
+
+    @Test
     void constructorRejectsNullArguments() {
         assertThrows(NullPointerException.class,
                 () -> new GetSharedHolidays(null, CountryCode.FR, CountryCode.DE));

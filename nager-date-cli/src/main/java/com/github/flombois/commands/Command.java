@@ -402,8 +402,8 @@ public class Command {
         public static final WeekdayHolidaysCommand INSTANCE = new WeekdayHolidaysCommand();
 
         @Parameter(names = {"-ccs", "--country-codes"}, description = "Comma-separated list of ISO 3166-1 alpha-2 country codes (e.g., \"FR,DE,US\")",
-                converter = CountryCodeListConverter.class, required = true)
-        public List<CountryCode> countryCodes;
+                converter = CountryCodeSetConverter.class, required = true)
+        public Set<CountryCode> countryCodes;
 
         private WeekdayHolidaysCommand() {}
 
@@ -426,8 +426,8 @@ public class Command {
     /**
      * Subcommand that finds public holiday dates shared by two countries.
      * <p>
-     * Accepts exactly 2 comma-separated country codes via the {@code -ccs} flag.
-     * Returns deduplicated dates with local names from each country, sorted by date.
+     * Accepts exactly 2 different comma-separated country codes via the {@code -ccs} flag.
+     * Duplicate codes are discarded. Returns deduplicated dates with local names from each country, sorted by date.
      * </p>
      *
      * @since 1.0
@@ -439,8 +439,8 @@ public class Command {
         public static final SharedHolidaysCommand INSTANCE = new SharedHolidaysCommand();
 
         @Parameter(names = {"-ccs", "--country-codes"}, description = "Exactly 2 comma-separated ISO 3166-1 alpha-2 country codes (e.g., \"FR,DE\")",
-                converter = CountryCodeListConverter.class, required = true)
-        public List<CountryCode> countryCodes;
+                converter = CountryCodeSetConverter.class, required = true)
+        public Set<CountryCode> countryCodes;
 
         private SharedHolidaysCommand() {}
 
@@ -457,10 +457,11 @@ public class Command {
         @Override
         protected ServiceExecutor<List<SharedHoliday>> getServiceExecutor(ServicesFactory factory) {
             if (countryCodes.size() != 2) {
-                throw new IllegalArgumentException("Exactly 2 country codes are required, got " + countryCodes.size());
+                throw new IllegalArgumentException("Exactly 2 different country codes are required, got " + countryCodes.size());
             }
+            var iterator = countryCodes.iterator();
             return new GetSharedHolidays(factory.createPublicHolidayV3Service(),
-                    countryCodes.get(0), countryCodes.get(1));
+                    iterator.next(), iterator.next());
         }
     }
 

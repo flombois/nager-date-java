@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -40,7 +41,7 @@ class WeekdayHolidaysCommandTest {
     @Test
     void getServiceExecutorReturnsGetWeekdayHolidays() {
         var spy = spy(WeekdayHolidaysCommand.INSTANCE);
-        spy.countryCodes = List.of(CountryCode.FR, CountryCode.DE);
+        spy.countryCodes = Set.of(CountryCode.FR, CountryCode.DE);
         when(servicesFactory.createPublicHolidayV3Service()).thenReturn(publicHolidayV3Service);
         var executor = spy.getServiceExecutor(servicesFactory);
         assertInstanceOf(GetWeekdayHolidays.class, executor);

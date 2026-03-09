@@ -11,7 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -40,7 +42,7 @@ class SharedHolidaysCommandTest {
     @Test
     void getServiceExecutorReturnsGetSharedHolidays() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = List.of(CountryCode.FR, CountryCode.DE);
+        spy.countryCodes = new LinkedHashSet<>(List.of(CountryCode.FR, CountryCode.DE));
         when(servicesFactory.createPublicHolidayV3Service()).thenReturn(publicHolidayV3Service);
         var executor = spy.getServiceExecutor(servicesFactory);
         assertInstanceOf(GetSharedHolidays.class, executor);
@@ -49,14 +51,22 @@ class SharedHolidaysCommandTest {
     @Test
     void getServiceExecutorRejectsWrongNumberOfCountryCodes() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = List.of(CountryCode.FR);
+        spy.countryCodes = Set.of(CountryCode.FR);
         assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
     }
 
     @Test
     void getServiceExecutorRejectsThreeCountryCodes() {
         var spy = spy(SharedHolidaysCommand.INSTANCE);
-        spy.countryCodes = List.of(CountryCode.FR, CountryCode.DE, CountryCode.US);
+        spy.countryCodes = Set.of(CountryCode.FR, CountryCode.DE, CountryCode.US);
+        assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
+    }
+
+    @Test
+    void getServiceExecutorRejectsDuplicateCountryCodes() {
+        var spy = spy(SharedHolidaysCommand.INSTANCE);
+        // "FR,FR" through the converter produces a Set with 1 element
+        spy.countryCodes = Set.of(CountryCode.FR);
         assertThrows(IllegalArgumentException.class, () -> spy.getServiceExecutor(servicesFactory));
     }
 }

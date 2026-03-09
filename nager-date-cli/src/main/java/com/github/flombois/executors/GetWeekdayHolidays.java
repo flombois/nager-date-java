@@ -29,16 +29,16 @@ public class GetWeekdayHolidays implements ServiceExecutor<List<WeekdayHolidayCo
     private static final Set<DayOfWeek> WEEKEND = Set.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 
     private final PublicHolidayV3Service publicHolidayV3Service;
-    private final List<CountryCode> countryCodes;
+    private final Set<CountryCode> countryCodes;
 
     /**
      * Constructs a GetWeekdayHolidays executor.
      *
      * @param publicHolidayV3Service the public holiday service to delegate to, must not be null
-     * @param countryCodes           the list of country codes to query, must not be null
+     * @param countryCodes           the set of country codes to query, must not be null
      * @throws NullPointerException if any argument is null
      */
-    public GetWeekdayHolidays(PublicHolidayV3Service publicHolidayV3Service, List<CountryCode> countryCodes) {
+    public GetWeekdayHolidays(PublicHolidayV3Service publicHolidayV3Service, Set<CountryCode> countryCodes) {
         Objects.requireNonNull(publicHolidayV3Service);
         Objects.requireNonNull(countryCodes);
         this.publicHolidayV3Service = publicHolidayV3Service;
